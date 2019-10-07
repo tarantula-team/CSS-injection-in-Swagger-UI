@@ -1,12 +1,12 @@
 # CSS-injection-in-Swagger-UI
 
-We have found a CSS Injection vulnerability on Swagger UI that allows attacker to use the Relative Path Overwrite (RPO) [2][3] technique to perform CSS-based input field value exfiltration. In our PoC, we were able to successfully steal the value of the CSRF token.
+We have found a CSS Injection vulnerability on Swagger UI that allows attacker to use the Relative Path Overwrite (RPO) [1][2] technique to perform CSS-based input field value exfiltration. In our PoC, we were able to successfully steal the value of the CSRF token.
 
 **Researcher: Kevin (DatLP) of The Tarantula Team, VinCSS (a member of Vingroup)**
 
 ## What is Swagger UI
 
-Swagger UI allows anyone — be it your development team or your end consumers — to visualize and interact with the API’s resources without having any of the implementation logic in place. It’s automatically generated from your OpenAPI (formerly known as Swagger) Specification, with the visual documentation making it easy for back end implementation and client side consumption [1].
+Swagger UI allows anyone — be it your development team or your end consumers — to visualize and interact with the API’s resources without having any of the implementation logic in place. It’s automatically generated from your OpenAPI (formerly known as Swagger) Specification, with the visual documentation making it easy for back end implementation and client side consumption [3].
 
 ## Background
 
@@ -71,7 +71,7 @@ With sequential @import chaining as below so we can steal full of CSRF token val
 
 ![](sequential%20import%20chaining.png)
 
-You can automate all this by using the [sic](https://github.com/d0nutptr/sic) tool [6]
+You can automate all this by using the [sic](https://github.com/d0nutptr/sic) tool [5]
 
 And result:
 
@@ -92,12 +92,12 @@ Swagger UI v3.23.10 and older versions
 
 ## Reference
 
-1. [ Swagger UI | API Development Tools | Swagger](https://swagger.io/tools/swagger-ui/)
+1. [RPO](http://www.thespanner.co.uk/2014/03/21/rpo/)
 2. [Detecting and exploiting path‐relative stylesheet import (PRSSI) vulnerabilities | PortSwigger Research](https://portswigger.net/research/detecting-and-exploiting-path-relative-stylesheet-import-prssi-vulnerabilities)
-3. [RPO](http://www.thespanner.co.uk/2014/03/21/rpo/)
+3. [Swagger UI | API Development Tools | Swagger](https://swagger.io/tools/swagger-ui/)
 4. [Exfiltration via CSS Injection](https://medium.com/bugbountywriteup/exfiltration-via-css-injection-4e999f63097d)
-5. [Attribute selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors)
-6. [GitHub ‐ d0nutptr/sic: A tool to perform Sequential Import Chaining](https://github.com/d0nutptr/sic)
+5. [GitHub ‐ d0nutptr/sic: A tool to perform Sequential Import Chaining](https://github.com/d0nutptr/sic)
+6. [Attribute selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors)
 7. [Better Exfiltration via HTML Injection ‐ d0nut ‐ Medium](https://medium.com/@d0nut/better-exfiltration-via-html-injection-31c72a2dae8b)
 8. [2019‐s3_css_injection_attacks.pdf](https://vwzq.net/slides/2019-s3_css_injection_attacks.pdf)
 9. [RPO Gadgets](https://blog.innerht.ml/rpo-gadgets/)
