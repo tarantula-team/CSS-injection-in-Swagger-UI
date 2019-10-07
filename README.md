@@ -80,7 +80,7 @@ And we got the following result:
     
 ## Tested versions
 
-Swagger UI v3.23.10 and older versions
+Swagger UI v3.23.10 and earlier
 
 ## Disclosure timeline
 
