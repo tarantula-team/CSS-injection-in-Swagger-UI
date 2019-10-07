@@ -16,8 +16,21 @@ We've discovered the vulnerability when reading the following in the document of
 We’ve observed that the ?url= parameter in SwaggerUI allows an aacker to override an otherwise hard‐coded schema file
 The decision was made to put this in the public issue tracker because (a) we aren’t going to immediately fix this, and (b) the aack surface for this is significantly diminished by our effecve sanizaon efforts to deter XSS aacks in documents used as input.
 ```
-So Swagger had known the problem for a long time, but Swagger thought that this vulnerability could not lead to an Cross-Site Scripting (XSS) exploit there so they ignored it.
+Swagger had known the issue for a long time, but Swagger thought that this vulnerability could not lead to an Cross-Site Scripting (XSS) exploit there so they ignored it. So We have decided to further research on this issue. We realize that Swagger UI allows users to embed Json from remote servers
 
+```javascript
+var url = window.location.search.match(/url=([^&]+)/);
+// ...
+url = options.swaggerUrl || url
+// ...
+var swaggerOptions = {
+    spec: spec1,
+url: url, // ...
+}
+var ui = SwaggerUIBundle(swaggerOptions)
+```
+
+(continue)
 
 ## Tested versions
 Lastest version of XXX. Release: September XX, XX.
