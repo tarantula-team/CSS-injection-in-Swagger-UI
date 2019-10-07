@@ -2,7 +2,7 @@
 
 We have found a CSS Injection vulnerability on Swagger UI that allows attacker to use the Relative Path Overwrite (RPO) [1][2] technique to perform CSS-based input field value exfiltration. In our PoC, we were able to successfully steal the CSRF token value.
 
-**Researcher: Kevin (DatLP) of The Tarantula Team, VinCSS (a member of Vingroup)**
+**Researcher: Kevinlpd (DatLP) of The Tarantula Team, VinCSS (a member of Vingroup)**
 
 ## What is Swagger UI
 
