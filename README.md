@@ -1,4 +1,4 @@
-()# CSS-injection-in-Swagger-UI
+# CSS-injection-in-Swagger-UI
 
 We have found a CSS Injection vulnerability on Swagger UI that allows us to use the Non-Root-Relative Path Overwrite (RPO) technique to steal users' tokens based on the attribute selectors feature.
 
