@@ -13,8 +13,8 @@ Swagger UI allows anyone — be it your development team or your end consumers �
 We've discovered the vulnerability when reading the following in the document of Swagger [3]:
 
 ```
-We’ve observed that the ?url= parameter in SwaggerUI allows an aacker to override an otherwise hard‐coded schema file
-The decision was made to put this in the public issue tracker because (a) we aren’t going to immediately fix this, and (b) the aack surface for this is significantly diminished by our effecve sanizaon efforts to deter XSS aacks in documents used as input.
+We’ve observed that the ?url= parameter in SwaggerUI allows an attacker to override an otherwise hard-coded schema file.
+The decision was made to put this in the public issue tracker because (a) we aren't going to immediately fix this, and (b) the attack surface for this is significantly diminished by our effective sanitization efforts to deter XSS attacks in documents used as input.
 ```
 Swagger had known the issue, but Swagger thought that this vulnerability could not lead to an Cross-Site Scripting (XSS) exploit, so they ignored it. So we have decided to further research on this issue. 
 
